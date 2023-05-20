@@ -15,7 +15,7 @@ import data.MainActivityViewModel;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding variableBinding;
-    MainActivityViewModel model;
+    private MainActivityViewModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,22 +31,31 @@ public class MainActivity extends AppCompatActivity {
         });
 
         model.editString.observe(this, s -> {
-            variableBinding.textview.setText("Your edit text: " + s);
+            variableBinding.textview.setText("Your edit: " + s);
         });
-
 
         model.isChecked.observe(this, selected -> {
             variableBinding.mycheckbox.setChecked((Boolean) selected);
             variableBinding.myradiobutton.setChecked((Boolean) selected);
             variableBinding.myswitch.setChecked((Boolean) selected);
+
+            Toast.makeText(this, "The value is now: " + selected, Toast.LENGTH_SHORT).show();
+        });
+
+        variableBinding.imageView.setOnClickListener(click -> {
+            Toast.makeText(this, "ImageView Clicked", Toast.LENGTH_SHORT).show();
+        });
+
+        variableBinding.myimagebutton.setOnClickListener(click -> {
+            variableBinding.myimagebutton.post(() -> {
+                int width = variableBinding.myimagebutton.getWidth();
+                int height = variableBinding.myimagebutton.getHeight();
+                Toast.makeText(this, "The width = " + width + " and height = " + height, Toast.LENGTH_SHORT).show();
+            });
         });
 
         variableBinding.mycheckbox.setOnCheckedChangeListener((v, isChecked) -> model.isChecked.postValue(isChecked));
         variableBinding.myradiobutton.setOnCheckedChangeListener((v, isChecked) -> model.isChecked.postValue(isChecked));
         variableBinding.myswitch.setOnCheckedChangeListener((v, isChecked) -> model.isChecked.postValue(isChecked));
-
-        Toast.makeText(this,"\"The value is now: \" + isChecked", Toast.LENGTH_SHORT);
-
-        variableBinding.mycheckbox.setOnClickListener()(v, isChecked) -> model.isChecked.postValue(isChecked));
     }
 }
