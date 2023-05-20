@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Welcome to my app.</string>
-    <string name="hello_message">Hello World ! </string>
-    <string name="button_message">Click here</string>
-    <string name="edit_message">Text changed</string>
-    <string name="hint_text">Write something here.</string>
+    <string name="app_name">Welcome to Eat Me, Love Me </string>
+    <string name="hello_message">You order : </string>
+    <string name="button_message">CONFIRM </string>
+    <string name="edit_message"> Your Order</string>
+    <string name="hint_text">Put your order here.</string>
 </resources>

@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         model.editString.observe(this, s -> {
-            variableBinding.textview.setText("Your edit: " + s);
+            variableBinding.textview.setText("Your order: " + s);
         });
 
         model.isChecked.observe(this, selected -> {
@@ -42,17 +42,13 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "The value is now: " + selected, Toast.LENGTH_SHORT).show();
         });
 
+
         variableBinding.imageView.setOnClickListener(click -> {
-            Toast.makeText(this, "ImageView Clicked", Toast.LENGTH_SHORT).show();
+            int width = variableBinding.imageView.getMeasuredWidth();
+            int height = variableBinding.imageView.getMeasuredHeight();
+            Toast.makeText(this, "The width = " + width + " and height = " + height, Toast.LENGTH_SHORT).show();
         });
 
-        variableBinding.myimagebutton.setOnClickListener(click -> {
-            variableBinding.myimagebutton.post(() -> {
-                int width = variableBinding.myimagebutton.getWidth();
-                int height = variableBinding.myimagebutton.getHeight();
-                Toast.makeText(this, "The width = " + width + " and height = " + height, Toast.LENGTH_SHORT).show();
-            });
-        });
 
         variableBinding.mycheckbox.setOnCheckedChangeListener((v, isChecked) -> model.isChecked.postValue(isChecked));
         variableBinding.myradiobutton.setOnCheckedChangeListener((v, isChecked) -> model.isChecked.postValue(isChecked));

@@ -25,19 +25,19 @@
         android:id="@+id/mycheckbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Do you drink coffee?" />
+        android:text="Cake for your soul ?" />
 
     <Switch
         android:id="@+id/myswitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Do you drink coffee?" />
+        android:text="Food for your heart ?" />
 
     <RadioButton
         android:id="@+id/myradiobutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Do you drink coffee?" />
+        android:text="Drink for my mind ? " />
 
     <EditText
         android:id="@+id/myedittext"
