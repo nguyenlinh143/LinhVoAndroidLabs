@@ -4,33 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
     android:orientation="vertical"
-    >
+    tools:context=".MainActivity"
+    tools:ignore="ExtraText">
 
     <TextView
-        android:textSize="30dp"
         android:id="@+id/textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_message"
-         />
+        android:textSize="30dp" />
 
     <Button
         android:id="@+id/mybutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
-        android:text="@string/button_message"
-        />
+        android:text="@string/button_message" />
+
+    <CheckBox
+        android:id="@+id/mycheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Do you drink coffee?" />
+
+    <Switch
+        android:id="@+id/myswitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Do you drink coffee?" />
+
+    <RadioButton
+        android:id="@+id/myradiobutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Do you drink coffee?" />
+
     <EditText
-        android:textSize="30dp"
         android:id="@+id/myedittext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/edit_message"
         android:hint="@string/hint_text"
-        />
+        android:text="@string/edit_message"
+        android:textSize="30dp" />
+
+    <ImageView
+        android:id="@+id/myimage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo-algonquin"
+       />
 
 
 </LinearLayout>

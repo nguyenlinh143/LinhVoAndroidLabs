@@ -8,29 +8,45 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import algonquin.cst2335.vo000077.databinding.ActivityMainBinding;
 import data.MainActivityViewModel;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding variableBinding;
- MainActivityViewModel model;
+    MainActivityViewModel model;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         model = new ViewModelProvider(this).get(MainActivityViewModel.class);
 
         variableBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(variableBinding.getRoot());
 
-variableBinding.textview.setText(model.editString);
+        variableBinding.mybutton.setOnClickListener(click -> {
+            model.editString.postValue(variableBinding.myedittext.getText().toString());
+        });
 
-        //TextView myText = variableBinding.textview;
-        Button myButton = variableBinding.mybutton;
-        //EditText my_edit = variableBinding.myedittext;
-        // replace findViewById(R.id.myedittext) = variableBinding.myedittext // to avoid mistakes
-        myButton.setOnClickListener((click) ->{
-            model.editString = variableBinding.myedittext.getText().toString();
-          variableBinding.textview.setText("Your edit text: "+model.editString);
-});
-}}
+        model.editString.observe(this, s -> {
+            variableBinding.textview.setText("Your edit text: " + s);
+        });
+
+
+        model.isChecked.observe(this, selected -> {
+            variableBinding.mycheckbox.setChecked((Boolean) selected);
+            variableBinding.myradiobutton.setChecked((Boolean) selected);
+            variableBinding.myswitch.setChecked((Boolean) selected);
+        });
+
+        variableBinding.mycheckbox.setOnCheckedChangeListener((v, isChecked) -> model.isChecked.postValue(isChecked));
+        variableBinding.myradiobutton.setOnCheckedChangeListener((v, isChecked) -> model.isChecked.postValue(isChecked));
+        variableBinding.myswitch.setOnCheckedChangeListener((v, isChecked) -> model.isChecked.postValue(isChecked));
+
+        Toast.makeText(this,"\"The value is now: \" + isChecked", Toast.LENGTH_SHORT);
+
+        variableBinding.mycheckbox.setOnClickListener()(v, isChecked) -> model.isChecked.postValue(isChecked));
+    }
+}
