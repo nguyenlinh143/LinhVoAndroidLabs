@@ -15,7 +15,8 @@ public class MainActivityViewModel extends ViewModel {
     //It's because a wrong type was used here,
     // and also because it was not initiated, so it was a null by default, that's how the
     //app crashed
-    public MutableLiveData<Object> isChecked = new MutableLiveData<>();
+    public MutableLiveData<Boolean> isChecked = new MutableLiveData<>();
+
 
 
 }

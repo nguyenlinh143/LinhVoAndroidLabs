@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
         variableBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(variableBinding.getRoot());
-
+      variableBinding.textview.setText(model.editString.getValue());
         variableBinding.mybutton.setOnClickListener(click -> {
             model.editString.postValue(variableBinding.myedittext.getText().toString());
         });
@@ -35,9 +35,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         model.isChecked.observe(this, selected -> {
-            variableBinding.mycheckbox.setChecked((Boolean) selected);
-            variableBinding.myradiobutton.setChecked((Boolean) selected);
-            variableBinding.myswitch.setChecked((Boolean) selected);
+            variableBinding.mycheckbox.setChecked( selected);
+            variableBinding.myradiobutton.setChecked( selected);
+            variableBinding.myswitch.setChecked(selected);
 
             Toast.makeText(this, "The value is now: " + selected, Toast.LENGTH_SHORT).show();
         });
