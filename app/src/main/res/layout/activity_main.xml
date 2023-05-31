@@ -40,7 +40,10 @@
         app:layout_constraintEnd_toStartOf="@+id/button3"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/button1"
-        app:layout_constraintTop_toTopOf="@+id/button1" />
+        app:layout_constraintTop_toTopOf="@+id/button1"
+        android:nextFocusDown="@id/switch2"
+        android:nextFocusRight="@id/button3"
+        android:nextFocusLeft="@id/button1"/>
 
     <Button
         android:id="@+id/button3"
@@ -51,7 +54,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/button2"
-        app:layout_constraintTop_toTopOf="@+id/button2" />
+        app:layout_constraintTop_toTopOf="@+id/button2"
+        android:nextFocusDown="@id/switch2"
+        android:nextFocusRight="@id/button1"
+        android:nextFocusLeft="@id/button2"/>
 
     <ImageView
         android:id="@+id/flagview"
