@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Linh VO\'s Android Labs</string>
-    <string name="hello_message">Bonjour tout le monte !</string>
-    <string name="button_message">Je suis un bouton.</string>
+
+    <string name="button_message1">bouton 1</string>
+    <string name="button_message2">bouton 2</string>
+    <string name="button_message3">bouton 3</string>
+
+    <string name="spin_message">"Drapeau de rotation "</string>
 </resources>
