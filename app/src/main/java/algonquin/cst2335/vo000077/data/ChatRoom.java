@@ -6,14 +6,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
-
-import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,6 +43,28 @@ public class ChatRoom extends AppCompatActivity {
 
         chatModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);
         messages = chatModel.messages.getValue();
+
+
+        chatModel.selectedMessage.observe(this, newValue -> {
+
+            if (binding.fragmentLocation != null) {
+                MessageDetailsFragment chatFragment = new MessageDetailsFragment(newValue);
+                chatFragment.displayMessage(newValue);
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentLocation, chatFragment)
+                        .commit();
+            } else {
+                // Load the fragment overtop the RecyclerView for the phone version
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .addToBackStack(null)
+                        .add(android.R.id.content, chatFragment)
+                        .commit();
+            }
+        });
+
+
 
         if (messages == null) {
             chatModel.messages.setValue(messages = new ArrayList<>());
@@ -142,7 +161,10 @@ public class ChatRoom extends AppCompatActivity {
             itemView.setOnClickListener(click -> {
 
                 int position = getAbsoluteAdapterPosition();
-                MyRowHolder newRow = myAdapter.onCreateViewHolder(null, myAdapter.getItemViewType(position));
+                ChatMessage selected = messages.get(position);
+
+                chatModel.selectedMessage.postValue(selected);
+                /* MyRowHolder newRow = myAdapter.onCreateViewHolder(null, myAdapter.getItemViewType(position));
 
                 //alert dialog to ask if you want to do this first.
                 AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
@@ -163,7 +185,7 @@ public class ChatRoom extends AppCompatActivity {
                                     })
                                     .show();
                         })
-                        .show();
+                        .show(); */
             });
 
             messageText = itemView.findViewById(R.id.messageText);
