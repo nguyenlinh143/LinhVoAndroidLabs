@@ -48,15 +48,16 @@ public class ChatRoom extends AppCompatActivity {
 //register as a listener to the MutableLiveData object:
         chatModel.selectedMessage.observe(this, (newValue) -> {
             MessageDetailsFragment chatFragment = new MessageDetailsFragment(newValue);
-           // chatFragment.displayMessage(newValue);
+            // chatFragment.displayMessage(newValue);
 
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragmentLocation, chatFragment)
-                    .addToBackStack(null)
+                    .addToBackStack("message_details_fragment")
                     .commit();
-        });
 
+
+        });
 
 
         if (messages == null) {
@@ -181,6 +182,15 @@ public class ChatRoom extends AppCompatActivity {
 
             messageText = itemView.findViewById(R.id.messageText);
             timeText = itemView.findViewById(R.id.timeText);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
         }
     }
 }

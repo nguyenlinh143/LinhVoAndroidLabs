@@ -29,15 +29,16 @@ public class MessageDetailsFragment extends Fragment {
         // Initialize the TextViews
         databaseIdTextView = view.findViewById(R.id.idText);
         messageTextView = view.findViewById(R.id.messageText);
-        //sentOrReceiveTextView = view.findViewById(R.id.messageText);
+        sentOrReceiveTextView = view.findViewById(R.id.SendReceiveText);
         timeSentTextView = view.findViewById(R.id.timeText);
 
         // Set the data in the TextViews
         databaseIdTextView.setText("Database ID: " + selectedMessage.getId());
         messageTextView.setText("Message: " + selectedMessage.getMessage());
-    sentOrReceiveTextView.setText("Sent/Received: " + selectedMessage.getSendOrReceive());
+        sentOrReceiveTextView.setText("Sent/Received: " + selectedMessage.getSendOrReceive());
         timeSentTextView.setText("Time Sent: " + selectedMessage.getTimeSent());
 
         return view;
     }
+
 }
