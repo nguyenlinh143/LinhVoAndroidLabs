@@ -45,23 +45,16 @@ public class ChatRoom extends AppCompatActivity {
         messages = chatModel.messages.getValue();
 
 
-        chatModel.selectedMessage.observe(this, newValue -> {
+//register as a listener to the MutableLiveData object:
+        chatModel.selectedMessage.observe(this, (newValue) -> {
+            MessageDetailsFragment chatFragment = new MessageDetailsFragment(newValue);
+           // chatFragment.displayMessage(newValue);
 
-            if (binding.fragmentLocation != null) {
-                MessageDetailsFragment chatFragment = new MessageDetailsFragment(newValue);
-                chatFragment.displayMessage(newValue);
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragmentLocation, chatFragment)
-                        .commit();
-            } else {
-                // Load the fragment overtop the RecyclerView for the phone version
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .addToBackStack(null)
-                        .add(android.R.id.content, chatFragment)
-                        .commit();
-            }
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentLocation, chatFragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
 
@@ -84,8 +77,7 @@ public class ChatRoom extends AppCompatActivity {
             String currentTime = getCurrentTime();
             boolean isSentButton = true;
 
-            int id = 1;
-            ChatMessage chatMessage = new ChatMessage(id, messageText, currentTime, isSentButton);
+            ChatMessage chatMessage = new ChatMessage(messageText, currentTime, "sent");
             messages.add(chatMessage);
 
             myAdapter.notifyItemInserted(messages.size() - 1);
@@ -97,8 +89,7 @@ public class ChatRoom extends AppCompatActivity {
             String currentTime = getCurrentTime();
             boolean isSentButton = false;
 
-            int id = 1;
-            ChatMessage chatMessage = new ChatMessage(id, messageText, currentTime, isSentButton);
+            ChatMessage chatMessage = new ChatMessage(messageText, currentTime, "received");
             messages.add(chatMessage);
 
             myAdapter.notifyItemInserted(messages.size() - 1);

@@ -7,32 +7,57 @@ import androidx.room.PrimaryKey;
 @Entity
 public class ChatMessage {
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name="id")
+    @ColumnInfo(name = "id")
     public int id;
-    @ColumnInfo(name="message")
-    String message;
-    @ColumnInfo(name="timeSent")
-    String timeSent;
-    @ColumnInfo(name="SendOrReceive")
-    boolean SendOrReceive;
 
+    @ColumnInfo(name = "message")
+    public String message;
 
-    public ChatMessage(int id, String message, String timeSent, boolean SendOrReceive) {
-        this.id = id;
+    @ColumnInfo(name = "timeSent")
+    public String timeSent;
+
+    @ColumnInfo(name = "SendOrReceive")
+    public String sendOrReceive;
+
+    public ChatMessage(String message, String timeSent, String sendOrReceive) {
         this.message = message;
         this.timeSent = timeSent;
-        this.SendOrReceive = SendOrReceive;
+        this.sendOrReceive = sendOrReceive;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getMessage() {
         return message;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public String getTimeSent() {
         return timeSent;
     }
 
+    public void setTimeSent(String timeSent) {
+        this.timeSent = timeSent;
+    }
+
+    public String getSendOrReceive() {
+        return sendOrReceive;
+    }
+
+    public void setSendOrReceive(String sendOrReceive) {
+        this.sendOrReceive = sendOrReceive;
+    }
+
     public boolean isSentButton() {
-        return SendOrReceive;
+        return "sent".equalsIgnoreCase(sendOrReceive);
     }
 }
