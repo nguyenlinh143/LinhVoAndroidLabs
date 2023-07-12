@@ -53,7 +53,7 @@ public class ChatRoom extends AppCompatActivity {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragmentLocation, chatFragment)
-                    .addToBackStack("message_details_fragment")
+                    .addToBackStack(" ")
                     .commit();
 
 
@@ -185,12 +185,4 @@ public class ChatRoom extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStack();
-        } else {
-            super.onBackPressed();
-        }
-    }
 }

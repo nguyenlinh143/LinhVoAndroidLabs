@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import algonquin.cst2335.vo000077.R;
+import algonquin.cst2335.vo000077.databinding.DetailsLayoutBinding;
 
 public class MessageDetailsFragment extends Fragment {
     private TextView databaseIdTextView;
@@ -18,27 +18,25 @@ public class MessageDetailsFragment extends Fragment {
 
     private ChatMessage selectedMessage;
 
+
+
     public MessageDetailsFragment(ChatMessage message) {
         selectedMessage = message;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.details_layout, container, false);
+        super.onCreateView(inflater, container, savedInstanceState);
+//        View view = inflater.inflate(R.layout.details_layout, container, false);
 
+        DetailsLayoutBinding binding = DetailsLayoutBinding.inflate(inflater);
+binding.messageText.setText(selectedMessage.message);
+        binding.messageText.setText(selectedMessage.timeSent);
+        binding.messageText.setText("id= " + selectedMessage.id);
         // Initialize the TextViews
-        databaseIdTextView = view.findViewById(R.id.idText);
-        messageTextView = view.findViewById(R.id.messageText);
-        sentOrReceiveTextView = view.findViewById(R.id.SendReceiveText);
-        timeSentTextView = view.findViewById(R.id.timeText);
 
-        // Set the data in the TextViews
-        databaseIdTextView.setText("Database ID: " + selectedMessage.getId());
-        messageTextView.setText("Message: " + selectedMessage.getMessage());
-        sentOrReceiveTextView.setText("Sent/Received: " + selectedMessage.getSendOrReceive());
-        timeSentTextView.setText("Time Sent: " + selectedMessage.getTimeSent());
 
-        return view;
+        return binding.getRoot();
     }
 
 }
