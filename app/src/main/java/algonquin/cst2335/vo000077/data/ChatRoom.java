@@ -149,8 +149,12 @@ public class ChatRoom extends AppCompatActivity {
 
             // Click listener for the item view
             itemView.setOnClickListener(click -> {
+
                 int position = getAbsoluteAdapterPosition();
                 ChatMessage selected = messages.get(position);
+
+                // Update the selected message in chatModel
+                chatModel.selectedMessage.setValue(selected);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
                 builder.setMessage("Do you want to delete this message: " + selected.getMessage())
