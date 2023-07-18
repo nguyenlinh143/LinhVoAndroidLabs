@@ -9,7 +9,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +37,8 @@ public class ChatRoom extends AppCompatActivity {
     ArrayList<ChatMessage> messages;
 
     RecyclerView.Adapter<MyRowHolder> myAdapter;
+    protected Toolbar theToolbar;
+    private MenuItem deleteMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,49 +46,36 @@ public class ChatRoom extends AppCompatActivity {
         binding = ActivityChatRoomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        setSupportActionBar(binding.myToolbar);
 
-        setSupportActionBar(binding.myToolbar); //week9
-        getMenuInflater().inflate(R.menu.menu,me);
         MessageDatabase db = Room.databaseBuilder(getApplicationContext(), MessageDatabase.class, "database-name").build();
-        ChatMessageDAO mDAO = db.cmDAO(); // the only function in MessageDatabase
-
+        ChatMessageDAO mDAO = db.cmDAO();
 
         chatModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);
         messages = chatModel.messages.getValue();
 
-
-//register as a listener to the MutableLiveData object:
         chatModel.selectedMessage.observe(this, (newValue) -> {
             MessageDetailsFragment chatFragment = new MessageDetailsFragment(newValue);
-            // chatFragment.displayMessage(newValue);
-
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragmentLocation, chatFragment)
                     .addToBackStack(" ")
                     .commit();
-
-
         });
-
 
         if (messages == null) {
             chatModel.messages.setValue(messages = new ArrayList<>());
 
             Executor thread = Executors.newSingleThreadExecutor();
-            thread.execute(() ->
-            {
-                messages.addAll(mDAO.getAllMessages()); //Once you get the data from database
-
-                runOnUiThread(() -> binding.recycleView.setAdapter(myAdapter)); //You can then load the RecyclerView
+            thread.execute(() -> {
+                messages.addAll(mDAO.getAllMessages());
+                runOnUiThread(() -> binding.recycleView.setAdapter(myAdapter));
             });
         }
-
 
         binding.sendButton.setOnClickListener(click -> {
             String messageText = binding.textInput.getText().toString();
             String currentTime = getCurrentTime();
-            boolean isSentButton = true;
 
             ChatMessage chatMessage = new ChatMessage(messageText, currentTime, "sent");
             messages.add(chatMessage);
@@ -96,7 +87,6 @@ public class ChatRoom extends AppCompatActivity {
         binding.receiveButton.setOnClickListener(click -> {
             String messageText = binding.textInput.getText().toString();
             String currentTime = getCurrentTime();
-            boolean isSentButton = false;
 
             ChatMessage chatMessage = new ChatMessage(messageText, currentTime, "received");
             messages.add(chatMessage);
@@ -157,35 +147,27 @@ public class ChatRoom extends AppCompatActivity {
         public MyRowHolder(@NonNull View itemView) {
             super(itemView);
 
-            //click anywhere in the adapter object.
+            // Click listener for the item view
             itemView.setOnClickListener(click -> {
-
                 int position = getAbsoluteAdapterPosition();
                 ChatMessage selected = messages.get(position);
 
-                chatModel.selectedMessage.postValue(selected);
-                /* MyRowHolder newRow = myAdapter.onCreateViewHolder(null, myAdapter.getItemViewType(position));
-
-                //alert dialog to ask if you want to do this first.
-                AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
-
-                builder.setMessage("Do you want to delete this message : " + messageText.getText())   //set sms on alert window
-                        .setTitle("Question : ") // set the title of alert dialog
-                        .setNegativeButton("No", (dialog, cl) -> { }) // dont delete anything. Lambda function empty
+                AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
+                builder.setMessage("Do you want to delete this message: " + selected.getMessage())
+                        .setTitle("Delete Message")
+                        .setNegativeButton("No", (dialog, cl) -> {})
                         .setPositiveButton("Yes", (dialog, cl) -> {
-
-                            ChatMessage removedMessage = messages.get(position);
                             messages.remove(position);
                             myAdapter.notifyItemRemoved(position);
 
-                            Snackbar.make(messageText, "You are deleted message # " + position, Snackbar.LENGTH_LONG)
+                            Snackbar.make(itemView, "You deleted message #" + position, Snackbar.LENGTH_LONG)
                                     .setAction("Undo", clck -> {
-                                        messages.add(position, removedMessage);
+                                        messages.add(position, selected);
                                         myAdapter.notifyItemInserted(position);
                                     })
                                     .show();
                         })
-                        .show(); */
+                        .show();
             });
 
             messageText = itemView.findViewById(R.id.messageText);
@@ -193,12 +175,12 @@ public class ChatRoom extends AppCompatActivity {
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
@@ -209,15 +191,23 @@ public class ChatRoom extends AppCompatActivity {
         } else if (itemId == R.id.item_delete) {
             ChatMessage selectedMessage = chatModel.selectedMessage.getValue();
             if (selectedMessage != null) {
-                int position = selectedMessage.getId();
-                ChatMessage removedMessage = messages.get(position);
-                messages.remove(position);
-                myAdapter.notifyItemRemoved(position);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Do you want to delete this message: " + selectedMessage.getMessage())
+                        .setTitle("Delete Message")
+                        .setNegativeButton("No", (dialog, cl) -> {})
+                        .setPositiveButton("Yes", (dialog, cl) -> {
+                            int position = messages.indexOf(selectedMessage);
+                            if (position != -1) {
+                                messages.remove(position);
+                                myAdapter.notifyItemRemoved(position);
 
-                Snackbar.make(binding.getRoot(), "You deleted message #" + position, Snackbar.LENGTH_LONG)
-                        .setAction("Undo", clck -> {
-                            messages.add(position, removedMessage);
-                            myAdapter.notifyItemInserted(position);
+                                Snackbar.make(binding.getRoot(), "You deleted message #" + position, Snackbar.LENGTH_LONG)
+                                        .setAction("Undo", clck -> {
+                                            messages.add(position, selectedMessage);
+                                            myAdapter.notifyItemInserted(position);
+                                        })
+                                        .show();
+                            }
                         })
                         .show();
             }
@@ -227,7 +217,5 @@ public class ChatRoom extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
-
 }
+
