@@ -1,9 +1,12 @@
 package algonquin.cst2335.vo000077.data;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +14,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +41,9 @@ public class ChatRoom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityChatRoomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+        setSupportActionBar(binding.myToolbar); //week9
 
         MessageDatabase db = Room.databaseBuilder(getApplicationContext(), MessageDatabase.class, "database-name").build();
         ChatMessageDAO mDAO = db.cmDAO(); // the only function in MessageDatabase
@@ -182,6 +190,39 @@ public class ChatRoom extends AppCompatActivity {
 
             messageText = itemView.findViewById(R.id.messageText);
             timeText = itemView.findViewById(R.id.timeText);
+        }
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+     // super.onCreateOptionsMenu(menu);
+getMenuInflater().inflate(R.menu.menu, menu);
+       return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.item_about:
+                Toast.makeText(this, "Application version 1.0, created by Linh VO", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.item_delete:
+                int position = chatModel.selectedMessage.getValue().getId();
+                ChatMessage removedMessage = messages.get(position);
+                messages.remove(position);
+                myAdapter.notifyItemRemoved(position);
+
+                Snackbar.make(binding.getRoot(), "You deleted message #" + position, Snackbar.LENGTH_LONG)
+                        .setAction("Undo", clck -> {
+                            messages.add(position, removedMessage);
+                            myAdapter.notifyItemInserted(position);
+                        })
+                        .show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
