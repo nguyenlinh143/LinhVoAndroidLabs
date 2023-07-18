@@ -44,7 +44,7 @@ public class ChatRoom extends AppCompatActivity {
 
 
         setSupportActionBar(binding.myToolbar); //week9
-
+        getMenuInflater().inflate(R.menu.menu,me);
         MessageDatabase db = Room.databaseBuilder(getApplicationContext(), MessageDatabase.class, "database-name").build();
         ChatMessageDAO mDAO = db.cmDAO(); // the only function in MessageDatabase
 
@@ -194,22 +194,22 @@ public class ChatRoom extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-     // super.onCreateOptionsMenu(menu);
-getMenuInflater().inflate(R.menu.menu, menu);
-       return true;
+        super.onCreateOptionsMenu(menu);
+        return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.item_about:
-                Toast.makeText(this, "Application version 1.0, created by Linh VO", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.item_delete:
-                int position = chatModel.selectedMessage.getValue().getId();
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.item_about) {
+            Toast.makeText(this, "Application version 1.0, created by Linh VO", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (itemId == R.id.item_delete) {
+            ChatMessage selectedMessage = chatModel.selectedMessage.getValue();
+            if (selectedMessage != null) {
+                int position = selectedMessage.getId();
                 ChatMessage removedMessage = messages.get(position);
                 messages.remove(position);
                 myAdapter.notifyItemRemoved(position);
@@ -220,10 +220,14 @@ getMenuInflater().inflate(R.menu.menu, menu);
                             myAdapter.notifyItemInserted(position);
                         })
                         .show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            }
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
+
+
+
 
 }
