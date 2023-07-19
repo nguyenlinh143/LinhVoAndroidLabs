@@ -1,12 +1,27 @@
 package algonquin.cst2335.vo000077;
 
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URLEncoder;
+
+import algonquin.cst2335.vo000077.databinding.ActivityMainBinding;
 
 /**
  * The MainActivity class represents the main activity of the application.
@@ -23,79 +38,93 @@ public class MainActivity extends AppCompatActivity {
      * @param savedInstanceState The saved instance state Bundle, or null if no previous state.
      */
 
+    RequestQueue queue = null;   // for sending network requests:
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        TextView tv = findViewById(R.id.textView);
-        EditText et = findViewById(R.id.editText);
-        Button btn = findViewById(R.id.button);
+        ActivityMainBinding binding = ActivityMainBinding.inflate( getLayoutInflater() );
 
-        //add eventListener to check password is too simple or not
-        btn.setOnClickListener(click ->{
-            String password = et.getText().toString();
-            checkPasswordComplexity(password);
+        //This part goes at the top of the onCreate function:
+        queue = Volley.newRequestQueue(this);
 
-            if(checkPasswordComplexity(password)){
-                tv.setText("Your password is complex enough");
-            }else {
-                tv.setText("You shall not pass!");
-            }
-        });
+
+        //This part goes at the top of the onCreate function:
+        RequestQueue queue = Volley.newRequestQueue(this); //like a constructor
+
+        //loads an XML file on the page
+        setContentView(  binding.getRoot()  );
+
+
+
+        binding.forecastButton.setOnClickListener( click -> {
+
+            String cityName = binding.cityTextField.getText().toString();
+            String url = "https://api.openweathermap.org/data/2.5/weather?q=" +
+                    URLEncoder.encode(cityName) //replace spaces, &. = with other characters
+                    + "&appid=7e943c97096a9784391a981c4d878b22&units=metric&units=metric";
+            JsonRequest request = new JsonObjectRequest(Request.Method.GET, url,null,
+           //gets CALLs when SUCCESSFUL
+
+            (response)->{
+                JSONObject main ;
+
+                try {
+                    main = response.getJSONObject("main");
+                    double current = main.getDouble("temp");
+                    double min = main.getDouble("temp_min");
+                    double max = main.getDouble("temp_max");
+                    int humidity = main.getInt("humidity");
+
+                                binding.temperatureTextView.setText("The current temperature is " + current + " degrees");
+                              binding.temperatureTextView.setVisibility(View.VISIBLE);
+                                binding.minTempTextView.setText("The min temperature is " + min + " degrees");
+                               binding.minTempTextView.setVisibility(View.VISIBLE);
+                                binding.maxTempTextView.setText("The max temperature is " + min + " degrees");
+                                binding.maxTempTextView.setVisibility(View.VISIBLE);
+                                binding.humidityTextView.setText("The humidity is " + humidity + " degrees");
+                            binding.humidityTextView.setVisibility(View.VISIBLE);
+
+                    JSONArray weatherArray = response.getJSONArray( "weather");
+
+
+
+                    JSONObject pos0 = weatherArray.getJSONObject( 0 );
+                    String  iconName = pos0.getString("icon");
+
+                    String pictureURL = "http://openweathermap.org/img/w/" + iconName + ".png";
+                    ImageRequest imgReq = new ImageRequest(pictureURL, new Response.Listener<Bitmap>() {
+                        @Override
+                        public void onResponse(Bitmap bitmap) {
+
+                            int i = 0;
+                        }
+                    }, 1024, 1024, ImageView.ScaleType.CENTER, null,
+                            (error ) -> {
+                                int i = 0;
+                            });
+
+                    queue.add(imgReq);
+                }
+                catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            },
+
+            //gets CALLs when SUCCESSFUL
+                    (error) ->{
+                        int i = 0;
+                    }
+            );
+                    queue.add(request);
+                }); ////run the web query
+
+
+
+
+
+
 
     }
-
-    /**
-     * Checks if the password is too simple or not.
-     *
-     * @param password The String object representing the password to check.
-     * @return true if the password meets the complexity requirements, false otherwise.
-     */
-    boolean checkPasswordComplexity(String password) {
-        boolean foundUpperCase, foundLowerCase, foundNumber, foundSpecial;
-
-        foundUpperCase = foundLowerCase = foundNumber = foundSpecial = false;
-        for (int i = 0; i < password.length(); i++) {
-            char c = password.charAt(i);
-
-            if (Character.isUpperCase(c)) {
-                foundUpperCase = true;
-            } else if (Character.isLowerCase(c)) {
-                foundLowerCase = true;
-            } else if (Character.isDigit(c)) {
-                foundNumber = true;
-            } else if (isSpecialCharacter(c)) {
-                foundSpecial = true;
-            }
-        }
-        if (!foundUpperCase) {
-            Toast.makeText(getApplicationContext(), "Password is missing an uppercase letter", Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (!foundLowerCase) {
-            Toast.makeText(getApplicationContext(), "Password is missing a lowercase letter", Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (!foundNumber) {
-            Toast.makeText(getApplicationContext(), "Password is missing a number", Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (!foundSpecial) {
-            Toast.makeText(getApplicationContext(), "Password is missing a special character", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        return true;
-    }
-    /**
-     * Checks if a character is a special character.
-     *
-     * @param c The character to check.
-     * @return true if the character is a special character (#$%^&*!@?), false otherwise.
-     */
-    private static boolean isSpecialCharacter(char c) {
-        // Return true if c is one of: #$%^&*!@?
-        // Return false otherwise
-        String specialCharacters = "#$%^&*!@?";
-        return specialCharacters.contains(String.valueOf(c));
-    }
-
 }
