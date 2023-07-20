@@ -20,15 +20,18 @@
             android:layout_height="match_parent"
             tools:context=".ChatRoom">
 
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycleView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="415dp"
+                android:layout_height="515dp"
                 android:background="@color/my_primary"
                 app:layout_constraintBottom_toTopOf="@id/guideline"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-               />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline"

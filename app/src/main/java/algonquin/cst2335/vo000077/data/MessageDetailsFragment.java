@@ -31,8 +31,8 @@ public class MessageDetailsFragment extends Fragment {
 
         DetailsLayoutBinding binding = DetailsLayoutBinding.inflate(inflater);
 binding.messageText.setText(selectedMessage.message);
-        binding.messageText.setText(selectedMessage.timeSent);
-        binding.messageText.setText("id= " + selectedMessage.id);
+        binding.timeText.setText(selectedMessage.timeSent);
+        binding.idText.setText("id= " + selectedMessage.id);
         // Initialize the TextViews
 
 
