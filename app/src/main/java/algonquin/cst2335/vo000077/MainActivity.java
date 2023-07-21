@@ -1,6 +1,5 @@
 package algonquin.cst2335.vo000077;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,10 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -47,9 +44,9 @@ public class MainActivity extends AppCompatActivity {
             String cityName = binding.cityTextField.getText().toString();
             String url = "https://api.openweathermap.org/data/2.5/weather?q=" +
                     URLEncoder.encode(cityName) +
-                    "&appid=7e943c97096a9784391a981c4d878b22&units=metric&units=metric";
+                    "&appid=7e943c97096a9784391a981c4d878b22&units=metric";
 
-            JsonRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                     response -> {
                         try {
                             JSONObject main = response.getJSONObject("main");
@@ -62,45 +59,48 @@ public class MainActivity extends AppCompatActivity {
                             binding.temperatureTextView.setVisibility(View.VISIBLE);
                             binding.minTempTextView.setText("The min temperature is " + min + " degrees");
                             binding.minTempTextView.setVisibility(View.VISIBLE);
-                            binding.maxTempTextView.setText("The max temperature is " + min + " degrees");
+                            binding.maxTempTextView.setText("The max temperature is " + max + " degrees");
                             binding.maxTempTextView.setVisibility(View.VISIBLE);
-                            binding.humidityTextView.setText("The humidity is " + humidity + " degrees");
+                            binding.humidityTextView.setText("The humidity is " + humidity + " %");
                             binding.humidityTextView.setVisibility(View.VISIBLE);
-
 
                             JSONArray weatherArray = response.getJSONArray("weather");
                             JSONObject pos0 = weatherArray.getJSONObject(0);
                             String iconName = pos0.getString("icon");
                             String pictureURL = "http://openweathermap.org/img/w/" + iconName + ".png";
 
-                            String pathname = getFilesDir()+"/"+iconName+"png";
+                            String pathname = getFilesDir() + "/" + iconName + ".png";
                             File file = new File(pathname);
-                            Bitmap image;
-                            if(file.exists()){
-                               image = BitmapFactory.decodeFile(pathname);
-                             //   binding.descriptionTextView.setImageBitmap(image);
-                           }
-                           else {
-                               ImageRequest imgReq = new ImageRequest(url, new Response.Listener>Bitmap<() {
-                                   @Override
-                                   public void onResponse(Bitmap bitmap) {
-                                       // Do something with loaded bitmap...
-                                       image = bitmap;
-                                       try {
-                                           image.compress(Bitmap.CompressFormat.PNG,100, MainActivity.this.openFileOutput(iconName +".png", Activity.MODE_PRIVATE))
-                                       } catch (FileNotFoundException ex) {
-                                           throw new RuntimeException(ex);
-                                       }
-                                   }
-                                   catch(Exception e){
+                            final Bitmap[] image = {null}; // Initialize the variable to null
 
-                                   }
-                               }, 1024, 1024, ImageView.ScaleType.CENTER, null, error -> {
+                            if (file.exists()) {
+                                image[0] = BitmapFactory.decodeFile(pathname);
+                            } else {
+                                ImageRequest imgReq = new ImageRequest(pictureURL, bitmap -> {
+                                    // Do something with loaded bitmap...
+                                    image[0] = bitmap;
+                                    try {
+                                        FileOutputStream fOut = openFileOutput(iconName + ".png", Context.MODE_PRIVATE);
+                                        image[0].compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                                        fOut.flush();
+                                        fOut.close();
+                                        binding.icon.setImageBitmap(image[0]);
+                                    } catch (FileNotFoundException e) {
+                                        e.printStackTrace();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }, 1024, 1024, ImageView.ScaleType.CENTER, null, error -> {
                                     // Handle error
-                                  //  error.printStackTrace();
+                                    // error.printStackTrace();
                                 });
 
                                 queue.add(imgReq);
+                            }
+
+                            if (image[0] != null) {
+                                binding.icon.setImageBitmap(image[0]);
+                                binding.descriptionTextView.setVisibility(View.VISIBLE);
                             }
 
                         } catch (JSONException e) {
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }, error -> {
                 // Handle error
-                error.printStackTrace();
+                // error.printStackTrace();
             });
 
             queue.add(request);
