@@ -64,8 +64,12 @@ public class MainActivity extends AppCompatActivity {
                             binding.humidityTextView.setText("The humidity is " + humidity + " %");
                             binding.humidityTextView.setVisibility(View.VISIBLE);
 
+
+
+
                             JSONArray weatherArray = response.getJSONArray("weather");
                             JSONObject pos0 = weatherArray.getJSONObject(0);
+                          String description = pos0.getString("description");
                             String iconName = pos0.getString("icon");
                             String pictureURL = "http://openweathermap.org/img/w/" + iconName + ".png";
 
@@ -100,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
                             if (image[0] != null) {
                                 binding.icon.setImageBitmap(image[0]);
+                             binding.descriptionTextView.setText("Description : " + description);
                                 binding.descriptionTextView.setVisibility(View.VISIBLE);
                             }
 
